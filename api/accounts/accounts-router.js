@@ -1,50 +1,65 @@
 const router = require("express").Router();
-const md = require('./accounts-middleware')
+const md = require("./accounts-middleware");
+const Account = require("./accounts-model");
 
-router.get("/", (req, res, next) => {
+router.get("/", async (req, res, next) => {
   // DO YOUR MAGIC
-  try { res.json('get accounts')
-   
-  } catch (err) {
-    next({ status: 422, message: "this is horrible" });
-  }
-});
-
-router.get("/:id", md.checkAccountId, (req, res, next) => {
-  // DO YOUR MAGIC
-  try { res.json('get accounts by id')
+  try {
+    const accounts = await Account.getAll();
+    res.json(accounts);
   } catch (err) {
     next(err);
   }
 });
 
-router.post("/", md.checkAccountPayload, md.checkAccountNameUnique, (req, res, next) => {
+router.get("/:id", md.checkAccountId, async (req, res, next) => {
   // DO YOUR MAGIC
-  try { res.json('post accounts')
-  } catch (err) {
-    next(err);
-  }
+  res.json(req.account);
 });
 
-router.put("/:id",md.checkAccountId,md.checkAccountPayload, md.checkAccountNameUnique,  (req, res, next) => {
-  // DO YOUR MAGIC
-  try { res.json('update accounts')
-  } catch (err) {
-    next(err);
+router.post(
+  "/",
+  md.checkAccountPayload,
+  md.checkAccountNameUnique,
+  (req, res, next) => {
+    // DO YOUR MAGIC
+    try {
+      res.json("post accounts");
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
+
+router.put(
+  "/:id",
+  md.checkAccountId,
+  md.checkAccountPayload,
+  md.checkAccountNameUnique,
+  (req, res, next) => {
+    // DO YOUR MAGIC
+    try {
+      res.json("update accounts");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.delete("/:id", md.checkAccountId, (req, res, next) => {
   // DO YOUR MAGIC
-  try { res.json('delete account')
+  try {
+    res.json("delete account");
   } catch (err) {
     next(err);
   }
 });
 
-router.use((err, req, res, next) => { // eslint-disable-line
+router.use((err, req, res, next) => {
+  // eslint-disable-line
   // DO YOUR MAGIC
-  try { res.json('get account')
+  try {
+    res.json("get account");
   } catch (err) {
     next(er);
   }
